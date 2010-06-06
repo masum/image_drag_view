@@ -1,0 +1,77 @@
+<script src="http://www.google.com/jsapi"></script>
+<script>google.load("jquery", "1");</script>
+<script src="ImageDragView.js"></script>
+<script>
+$(document).ready(function() {
+  $("#content").ImageDragView({
+    image: "back.gif",
+    callback: function(param) {
+      var str="";
+      str += "left("+param.left+")/";
+      str += "top("+param.top+")/";
+      str += "right("+param.right+")/";
+      str += "bottom("+param.bottom+") ";
+      str += "ratio("+param.ratio + ")";
+      str += "zoom("+param.zoom + ")";
+      console.log(str);
+      show(param);
+    }
+  });
+});
+
+var tweet = [
+{x:320,y:450},
+{x:343,y:478},
+{x:360,y:567},
+{x:380,y:295},
+{x:413,y:280},
+{x:413,y:380},
+{x:651,y:370},
+{x:650,y:210},
+{x:505,y:301},
+{x:505,y:191}
+]
+var param;
+function show(obj) {
+  param = obj;
+  for (var i=0;i<tweet.length;i++) {
+    showItem(tweet[i]);
+  } 
+}
+function showItem(item) {
+  if (item.elm != null) {
+    var x = item.x * param.ratio;
+    var y = item.y * param.ratio;
+    var left = x - param.left;
+    var top = y - param.top;
+    item.elm.css({left:left,top:top});
+  }
+}
+function toggleTweet(item) {
+  if (item.elm == null) {
+      item.elm = $("<img src='c1.png'>").appendTo($("#content")).
+                        css({position:"absolute"}).fadeIn();
+  } else {
+    if (item.elm.css("display") == "none") {
+      item.elm.fadeIn();
+    } else {
+      item.elm.fadeOut().hide();
+    }
+  }
+  showItem(item);
+}
+var id=setInterval(function() {
+  var n = Math.floor(Math.random() * tweet.length);
+  var item = tweet[n];
+  toggleTweet(item);
+},1000*2);
+</script>
+<style>
+#content {
+  width:400px;
+  height:300px;
+  left:100px;
+  border:1px solid gray;
+}
+</style>
+<div id="content"></div>
